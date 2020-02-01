@@ -31,5 +31,13 @@ public class DateUtil implements Serializable {
 		}
 		return instante;
 	}
-
+	
+	/*
+	 * To solve the 'indentity' issue where the same serialized object when
+	 * deserialized back to an Object is not longer equals we must implement the
+	 * readResolve() method;
+	 */
+	protected Object readResolve() {
+		return instante;
+	}
 }
