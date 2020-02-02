@@ -27,10 +27,10 @@ In further sections, we will learn different approaches of Singleton pattern imp
 - [Static block initialization](#static-block-initialization)
 - [Lazy Initialization](#lazy-Initialization)
 - [Thread Safe Singleton](#thread-safe-singleton)
-- [Bill Pugh Singleton Implementation](#bill-pugh-singleton -mplementation)
+- [Bill Pugh Singleton Implementation](#bill-pugh-singleton-implementation)
 - [Using Reflection to destroy Singleton Pattern](#using-reflection-to-destroy-singleton-pattern)
 - [Enum Singleton](#enum-singleton)
-- [Serialization and Singleton](#Serialization and Singleton)
+- [Serialization and Singleton](#serialization-and-singleton)
 
 ## Eager initialization
 In eager initialization, the instance of Singleton Class is created at the time of class loading, this is the easiest method to create a singleton class but it has a drawback that instance is created even though client application might not be using it.
@@ -187,7 +187,10 @@ Reflection can be used to destroy all the above singleton implementation approac
 ```
 package com.gbastos.JavaDesignPatterns.Singleton;
 
+import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Constructor;
+
+import org.junit.Test;
 
 public class ReflectionSingletonTest {
 
@@ -205,8 +208,8 @@ public class ReflectionSingletonTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(instanceOne.hashCode());
-        System.out.println(instanceTwo.hashCode());
+        
+        assertEquals(instanceOne, instanceTwo);
     }
 
 }
@@ -261,6 +264,7 @@ The problem with serialized singleton class is that whenever we deserialize it, 
 ```
 package com.gbastos.JavaDesignPatterns.Singleton;
 
+import static org.junit.Assert.assertEquals;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -270,26 +274,28 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+import org.junit.Test;
+
 public class SingletonSerializedTest {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
-        SerializedSingleton instanceOne = SerializedSingleton.getInstance();
-        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(
-                "filename.ser"));
+	private static final String FILENAME = "filename.ser";
+
+	@Test
+	public void singletonSerializedTest()  throws FileNotFoundException, IOException, ClassNotFoundException{
+		
+		DateUtil instanceOne = DateUtil.getInstance();
+        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(FILENAME));
         out.writeObject(instanceOne);
         out.close();
-        
-        //deserailize from file to object
-        ObjectInput in = new ObjectInputStream(new FileInputStream(
-                "filename.ser"));
-        SerializedSingleton instanceTwo = (SerializedSingleton) in.readObject();
+	        
+        // Deserailize from file to object
+        ObjectInput in = new ObjectInputStream(new FileInputStream(FILENAME));
+        DateUtil instanceTwo = (DateUtil) in.readObject();
         in.close();
         
-        System.out.println("instanceOne hashCode="+instanceOne.hashCode());
-        System.out.println("instanceTwo hashCode="+instanceTwo.hashCode());
-        
-    }
-
+		assertEquals(instanceOne, instanceTwo);
+	}
+	
 }
 ```
 
