@@ -3,6 +3,7 @@
 .project
 .settings/
 /.settings
+bin/
 
 # Intellij
 .idea/
